@@ -30,15 +30,29 @@ while True:
     blue_contornos, _ = cv2.findContours(blue_hsv, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     reddish_contornos, _ = cv2.findContours(reddish_hsv, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    blue_img = blue_rgb.copy()
-    reddish_img = reddish_rgb.copy()
+    # R2 - identifica a forma geométrica de maior massa com um retângulo verde em output visual
+    maxArea = 0
+    maxShape = 0
+    for i in range(0, len(blue_contornos)):
+        area = cv2.contourArea(blue_contornos[i])
 
-    full_mask = cv2.bitwise_or(blue_rgb, reddish_rgb)
-
-    full_img = cv2.bitwise_and(frame, frame, full_mask)
+        if area > maxArea:
+            maxArea = area
+            maxShape = blue_contornos[i]
     
-    cv2.drawContours(full_img, blue_contornos, -1, [0, 255, 0], 3)
-    cv2.drawContours(full_img, reddish_contornos, -1, [0, 255, 0], 3)
+    for i in range(0, len(reddish_contornos)):
+        area = cv2.contourArea(reddish_contornos[i])
+
+        if area > maxArea:
+            maxArea = area
+            maxShape = reddish_contornos[i]
+
+    full_img = cv2.bitwise_and(frame, frame, blue_rgb)
+
+    x, y, w, h = cv2.boundingRect(maxShape)
+    cv2.rectangle(full_img, (x - 2, y - 2), (x + w - 2, y + h - 2), (116, 172, 68), 8)
+
+    full_img = cv2.bitwise_and(full_img, full_img, reddish_rgb)
 
     # Exibe resultado
     cv2.imshow("Feed", full_img)
