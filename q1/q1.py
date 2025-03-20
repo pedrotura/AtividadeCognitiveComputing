@@ -57,7 +57,10 @@ while True:
 
     x2, y2, w2, h2 = cv2.boundingRect(reddish_contornos[0])
 
-    if (y2 + h2 >= y1 and y2 <= y1 + h1) and (x2 <= x1 + w1 and x2 + w2 >= x1):
+    first_condition = y2 + h2 >= y1 and y2 <= y1 + h1
+    second_condition = x2 <= x1 + w1 and x2 + w2 >= x1
+
+    if first_condition and second_condition:
         cv2.putText(full_img, "COLLISION DETECTED", (50, 50), cv2.QT_FONT_NORMAL , 1, (102, 217, 255), 2, cv2.LINE_AA)
 
     # R4 - identifica e exibe que a forma geométrica de maior massa ultrapassou completamente a outra
