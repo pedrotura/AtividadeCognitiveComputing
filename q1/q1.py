@@ -49,10 +49,20 @@ while True:
 
     full_img = cv2.bitwise_and(frame, frame, blue_rgb)
 
-    x, y, w, h = cv2.boundingRect(maxShape)
-    cv2.rectangle(full_img, (x - 2, y - 2), (x + w - 2, y + h - 2), (116, 172, 68), 8)
+    # R3 - detecta colisão entre as formas geométricas, escrevendo no output visual "COLISÃO DETECTADA"
+    x1, y1, w1, h1 = cv2.boundingRect(maxShape)
+    cv2.rectangle(full_img, (x1 - 2, y1 - 2), (x1 + w1 - 2, y1 + h1 - 2), (116, 172, 68), 8)
 
     full_img = cv2.bitwise_and(full_img, full_img, reddish_rgb)
+
+    x2, y2, w2, h2 = cv2.boundingRect(reddish_contornos[0])
+
+    if (y2 + h2 >= y1 and y2 <= y1 + h1) and (x2 <= x1 + w1 and x2 + w2 >= x1):
+        cv2.putText(full_img, "COLLISION DETECTED", (50, 50), cv2.QT_FONT_NORMAL , 1, (102, 217, 255), 2, cv2.LINE_AA)
+
+    # R4 - identifica e exibe que a forma geométrica de maior massa ultrapassou completamente a outra
+    if x1 + w1 < x2:
+        cv2.putText(full_img, "THRESHOLD EXCEEDED", (50, 50), cv2.QT_FONT_NORMAL , 1, (102, 217, 255), 2, cv2.LINE_AA)
 
     # Exibe resultado
     cv2.imshow("Feed", full_img)
